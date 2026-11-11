@@ -1,0 +1,390 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Help Desk Management System</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="brand">
+        ICT HELP DESK
+        <small>MANAGEMENT SYSTEM</small>
+    </div>
+
+    <p class="nav-label">MAIN MENU</p>
+
+    <button class="nav-btn active" onclick="showPage('dashboard',this)">
+        ◈ Dashboard
+    </button>
+
+    <button class="nav-btn" onclick="showPage('tickets',this)">
+        ▤ Support Tickets
+    </button>
+
+    <button class="nav-btn" onclick="showPage('newTicket',this)">
+        + Create New Ticket
+    </button>
+
+    <button class="nav-btn" onclick="showPage('reports',this)">
+        ▥ Reports
+    </button>
+
+    <button class="nav-btn" onclick="showPage('about',this)">
+        ⚙ About System
+    </button>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<header class="topbar">
+    <div>
+        <h1>ICT Help Desk Portal</h1>
+        <p>Manage technical issues, requests and support services.</p>
+    </div>
+    <div class="admin">👤 ICT Administrator</div>
+</header>
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="page active">
+
+    <div class="section-heading">
+        <h2>Dashboard Overview</h2>
+        <button class="btn" onclick="showPage('newTicket')">
+            + New Support Ticket
+        </button>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <p>Total Tickets</p>
+            <h2 id="totalTickets">0</h2>
+            <small>All registered requests</small>
+        </div>
+
+        <div class="stat-card">
+            <p>Open Tickets</p>
+            <h2 id="openTickets">0</h2>
+            <small>Awaiting attention</small>
+        </div>
+
+        <div class="stat-card">
+            <p>In Progress</p>
+            <h2 id="progressTickets">0</h2>
+            <small>Currently being handled</small>
+        </div>
+
+        <div class="stat-card">
+            <p>Resolved Tickets</p>
+            <h2 id="resolvedTickets">0</h2>
+            <small>Successfully completed</small>
+        </div>
+    </div>
+
+    <div class="section-heading">
+        <h2>Recent Support Requests</h2>
+        <button class="btn btn-light" onclick="showPage('tickets')">
+            View All
+        </button>
+    </div>
+
+    <div class="card">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Client</th>
+                        <th>Issue</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="recentTable"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- TICKETS -->
+<section id="tickets" class="page">
+
+    <div class="section-heading">
+        <h2>Support Ticket Records</h2>
+        <button class="btn" onclick="showPage('newTicket')">
+            + Register Ticket
+        </button>
+    </div>
+
+    <div class="card">
+        <div class="filters">
+            <input
+                class="search-box"
+                id="searchInput"
+                placeholder="Search client, ID or issue..."
+                oninput="renderTickets()">
+
+            <select id="statusFilter" onchange="renderTickets()">
+                <option value="">All Statuses</option>
+                <option>Open</option>
+                <option>In Progress</option>
+                <option>Resolved</option>
+            </select>
+
+            <select id="priorityFilter" onchange="renderTickets()">
+                <option value="">All Priorities</option>
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+                <option>Critical</option>
+            </select>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Department</th>
+                        <th>Issue</th>
+                        <th>Technician</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ticketTable"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- NEW TICKET -->
+<section id="newTicket" class="page">
+
+    <div class="section-heading">
+        <h2>Register ICT Support Request</h2>
+    </div>
+
+    <div class="card">
+        <form id="ticketForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Client Full Name *</label>
+                    <input type="text" id="client" required
+                    placeholder="Enter client name">
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="phone" required
+                    placeholder="e.g. 0712345678">
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email"
+                    placeholder="client@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label>Department *</label>
+                    <select id="department" required>
+                        <option value="">Select department</option>
+                        <option>ICT Department</option>
+                        <option>Administration</option>
+                        <option>Finance</option>
+                        <option>Human Resources</option>
+                        <option>Marketing</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Issue Category *</label>
+                    <select id="category" required>
+                        <option value="">Select category</option>
+                        <option>Hardware Problem</option>
+                        <option>Software Problem</option>
+                        <option>Network / Internet</option>
+                        <option>Printer Problem</option>
+                        <option>Email Support</option>
+                        <option>System Access</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Priority Level *</label>
+                    <select id="priority" required>
+                        <option value="">Select priority</option>
+                        <option>Low</option>
+                        <option>Medium</option>
+                        <option>High</option>
+                        <option>Critical</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Assigned Technician *</label>
+                    <input type="text" id="technician" required
+                    placeholder="Enter technician name">
+                </div>
+
+                <div class="form-group">
+                    <label>Ticket Status</label>
+                    <select id="status">
+                        <option>Open</option>
+                        <option>In Progress</option>
+                        <option>Resolved</option>
+                    </select>
+                </div>
+
+                <div class="form-group full">
+                    <label>Problem Description *</label>
+                    <textarea id="description" required
+                    placeholder="Describe the technical issue..."></textarea>
+                </div>
+
+                <div class="form-group full">
+                    <label>Resolution / Remarks</label>
+                    <textarea id="remarks"
+                    placeholder="Enter resolution or additional remarks..."></textarea>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn">
+                Save Support Ticket
+            </button>
+
+            <button type="reset" class="btn btn-light">
+                Clear Form
+            </button>
+
+        </form>
+    </div>
+</section>
+
+<!-- REPORTS -->
+<section id="reports" class="page">
+
+    <div class="section-heading">
+        <h2>ICT Support Reports</h2>
+        <button class="btn" onclick="exportCSV()">
+            ↓ Export CSV
+        </button>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <p>Total Requests</p>
+            <h2 id="reportTotal">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Resolved</p>
+            <h2 id="reportResolved">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Pending</p>
+            <h2 id="reportPending">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Critical Issues</p>
+            <h2 id="reportCritical">0</h2>
+        </div>
+    </div>
+
+    <div class="section-heading">
+        <h2>Support Performance</h2>
+    </div>
+
+    <div class="card">
+        <h3 style="color:var(--dark);margin-bottom:18px;">
+            Ticket Status Summary
+        </h3>
+
+        <div id="reportBars"></div>
+    </div>
+
+    <div class="card">
+        <h3 style="color:var(--dark);margin-bottom:12px;">
+            Report Information
+        </h3>
+        <p style="font-size:13px;line-height:1.8;color:var(--muted);">
+            This report provides an overview of ICT support requests,
+            their priority levels and resolution progress. Use Export CSV
+            to download records for further analysis in Microsoft Excel.
+        </p>
+    </div>
+
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="page">
+
+    <div class="section-heading">
+        <h2>About the System</h2>
+    </div>
+
+    <div class="card">
+        <h2 style="color:var(--burgundy);margin-bottom:12px;">
+            ICT Help Desk Management System
+        </h2>
+
+        <p style="line-height:1.8;font-size:14px;">
+            The ICT Help Desk Management System is a digital platform
+            designed to help an organisation register, track and manage
+            technical support requests efficiently.
+        </p>
+
+        <br>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>Purpose</h3>
+                <p>To improve the management of ICT complaints and support requests.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Users</h3>
+                <p>ICT administrators, technicians and staff members.</p>
+            </div>
+
+            <div class="info-box">
+                <h3>Technology</h3>
+                <p>HTML, CSS, JavaScript and browser local storage.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    ICT Help Desk Management System | Version 1.0
+    <br>
+    Developed as an ICT project demonstration.
+</footer>
+
+</main>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
